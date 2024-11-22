@@ -1,0 +1,100 @@
+require('dotenv').config();
+const express = require("express");
+const axios = require('axios'); 
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+const BASE_URL = 'https://jsonplaceholder.typicode.com';
+
+
+app.use(express.json());
+
+
+app.get('/api/comments', async (req, res) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/comments`);
+        res.json(response.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Erreur lors de la récupération des commentaires"
+        });
+    }
+});
+
+
+app.post('/api/todos', async (req, res) => {
+    try {
+        const todoData = {
+            userId: 1,
+            title: "Nouveau todo",
+            completed: false
+        };
+
+        const response = await axios.post(`${BASE_URL}/todos`, todoData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        res.status(201).json(response.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Erreur lors de la création du todo"
+        });
+    }
+});
+
+
+app.patch('/api/posts/:id', async (req, res) => {
+    try {
+        const postUpdate = {
+            title: "Titre modifié",
+            body: "Corps du message modifié"
+        };
+
+        const response = await axios.patch(`${BASE_URL}/posts/${req.params.id}`, postUpdate);
+        res.json(response.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Erreur lors de la modification du post"
+        });
+    }
+});
+
+
+app.get('/api/posts/:postId/comments', async (req, res) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/posts/${req.params.postId}/comments`);
+        res.json(response.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Erreur lors de la récupération des commentaires du post"
+        });
+    }
+});
+
+
+app.get('/api/albums/:albumId/photos', async (req, res) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/albums/${req.params.albumId}/photos`);
+        res.json(response.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Erreur lors de la récupération des photos de l'album"
+        });
+    }
+});
+
+
+app.get('/', (req, res) => {
+    res.send('API Client for JSONPlaceholder');
+});
+
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+});

@@ -63,16 +63,16 @@ app.listen(port, () => {
 }); */
 
 
-// Import des dépendances
+
 require('dotenv').config();
 const express = require("express");
 const { Pool } = require('pg');
 
-// Initialisation de l'application et du port
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuration de la connexion à la base PostgreSQL
+
 const pool = new Pool({
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
@@ -81,10 +81,10 @@ const pool = new Pool({
     port: process.env.DATABASE_PORT
 });
 
-// Middleware pour parser le JSON
+
 app.use(express.json());
 
-// Création de la table articles (à exécuter une fois)
+
 pool.query(`
     CREATE TABLE IF NOT EXISTS articles (
         id SERIAL PRIMARY KEY,
@@ -96,7 +96,7 @@ pool.query(`
 .then(() => console.log('Table articles créée ou déjà existante'))
 .catch(err => console.error('Erreur lors de la création de la table articles:', err));
 
-// Routes pour articles
+
 app.get("/articles", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM articles ORDER BY id ASC");
@@ -188,7 +188,9 @@ app.delete("/articles/:id", async (req, res) => {
     }
 });
 
-// Démarrage du serveur
+
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
+
+
